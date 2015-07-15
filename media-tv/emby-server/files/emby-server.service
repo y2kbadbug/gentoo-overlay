@@ -1,6 +1,9 @@
 [Unit]
 Description=Emby Server is a home media server built using other popular open source technologies.
+<<<<<<< HEAD
 After=network.target
+=======
+>>>>>>> e575084ecbf33485d575006c79ddc4e3213d3532
 
 [Service]
 EnvironmentFile=/etc/conf.d/emby-server
@@ -10,5 +13,11 @@ User=emby
 Group=emby
 Restart=on-failure
 
+<<<<<<< HEAD
+=======
+[Unit]
+After=network.target
+
+>>>>>>> e575084ecbf33485d575006c79ddc4e3213d3532
 [Install]
 WantedBy=multi-user.target
