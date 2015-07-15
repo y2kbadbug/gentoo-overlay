@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<layman>
+   <overlay
+      type    = "git"
+      src     = "https://github.com/y2kbadbug/gentoo-overlay.git"
+      contact = "daniel@danielshafer.name"
+      status  = "unofficial"
+      name    = "y2kbadbug">
+      <link>http://github.com/y2kbadbug/gentoo-overlay</link>
+      <description>Daniel Shafer's Personal Overlay</description>
+   </overlay>
+</layman>
