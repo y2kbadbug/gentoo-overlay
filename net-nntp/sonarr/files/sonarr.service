@@ -1,5 +1,5 @@
 [Unit]
-Description=Sonarr Daemon
+Description=Sonarr (NZBDrone) is a PVR for Usenet and BitTorrent users.
 After=syslog.target network.target
 
 [Service]
@@ -7,8 +7,10 @@ User=sonarr
 Group=sonarr
 
 Type=simple
-ExecStart=/opt/mono/bin/mono /opt/NzbDrone/NzbDrone.exe -nobrowser -data /opt/NzbDrone
+ExecStart=/usr/bin/mono /usr/share/NzbDrone/NzbDrone.exe -nobrowser
 TimeoutStopSec=20
+KillMode=process
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

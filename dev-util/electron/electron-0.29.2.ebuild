@@ -8,10 +8,10 @@ PYTHON_COMPAT=( python2_7 )
 inherit git-r3 flag-o-matic python-any-r1
 
 DESCRIPTION="Cross-platform desktop application shell"
-HOMEPAGE="https://github.com/atom/atom-shell"
+HOMEPAGE="https://github.com/atom/electron"
 SRC_URI=""
 
-EGIT_REPO_URI="git://github.com/atom/atom-shell"
+EGIT_REPO_URI="git://github.com/atom/electron"
 
 LICENSE="MIT"
 SLOT="0/22"
@@ -49,8 +49,8 @@ RDEPEND="${DEPEND}
 "
 
 QA_PRESTRIPPED="
-	/usr/share/atom/libffmpegsumo.so
-	/usr/share/atom/libchromiumcontent.so
+	/usr/share/electron/libffmpegsumo.so
+	/usr/share/electron/libchromiumcontent.so
 "
 src_unpack() {
 	git-r3_src_unpack
@@ -64,7 +64,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	einfo "Bootstrap atom-shell source"
+	einfo "Bootstrap electron source"
 
 	# Fix util.execute function to be more verbose
 	sed -i -e 's/def execute(argv):/def execute(argv):\n  print "   - bootstrap: " + " ".join(argv)/g' \
@@ -76,7 +76,7 @@ src_prepare() {
 
 	# Fix libudev.so.0 link
 	sed -i -e 's/libudev.so.0/libudev.so.1/g' \
-		./vendor/brightray/vendor/download/libchromiumcontent/Release/libchromiumcontent.so \
+		./vendor/brightray/vendor/download/libchromiumcontent/shared_library/libchromiumcontent.so \
 		|| die "libudev fix failed"
 
 	# Make every subprocess calls fatal
@@ -89,21 +89,21 @@ src_prepare() {
 }
 
 src_compile() {
-	OUT=out/$(usex debug Debug Release)
-	./script/build.py --configuration $(usex debug Debug Release) || die "Compilation failed"
+	OUT=out/$(usex debug Debug Release R)
+	./script/build.py --configuration $(usex debug Debug Release R) || die "Compilation failed"
 	echo "v$PV" > "${OUT}/version"
 	cp LICENSE "$OUT"
 }
 
 src_install() {
 
-	into	/usr/share/atom
-	insinto /usr/share/atom
-	exeinto /usr/share/atom
+	into	/usr/share/electron
+	insinto /usr/share/electron
+	exeinto /usr/share/electron
 
-	cd "${OUT}"
+	cd "$OUT"
 
-	doexe atom libchromiumcontent.so libffmpegsumo.so
+	doexe electron libchromiumcontent.so libffmpegsumo.so
 
 	doins -r resources
 	doins -r locales
