@@ -1,0 +1,1 @@
+net-nntp/sonarr:updater - Use built-in updater instead of using portage to handle updates

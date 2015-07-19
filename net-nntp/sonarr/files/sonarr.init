@@ -7,8 +7,8 @@ depend() {
         need net
 }
 
-run_dir="/var/run/NzbDrone"
-pidfile="$run_dir/NzbDrone.pid"
+run_dir="/var/run/sonarr"
+pidfile="$run_dir/sonarr.pid"
 etc_dir="/etc/sonarr"
 var_dir="/var/sonarr"
 log_dir="/var/log/sonarr"

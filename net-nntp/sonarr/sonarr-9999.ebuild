@@ -4,18 +4,11 @@
 
 EAPI=5
 
-inherit eutils user python systemd git-r3
+inherit eutils user python systemd
 
 PYTHON_DEPEND="2:2.7"
 
-EGIT_REPO_URI="https://github.com/${PN}/${PN}.git"
-if [[ $PV == 9999 ]]; then
-	EGIT_BRANCH="develop"
-else
-	EGIT_COMMIT="v${PV}"
-fi
-
-EGIT_CHECKOUT_DIR=${WORKDIR}/${PN}
+SRC_URI="http://update.sonarr.tv/v2/master/mono/NzbDrone.master.tar.gz"
 
 DESCRIPTION="Sonarr is a PVR for Usenet and BitTorrent users."
 HOMEPAGE="https://github.com/Sonarr/Sonarr"
@@ -23,8 +16,12 @@ HOMEPAGE="https://github.com/Sonarr/Sonarr"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-RDEPEND=">=dev-lang/mono-3.2.8 media-video/mediainfo dev-db/sqlite"
-
+RDEPEND="
+	>=dev-lang/mono-3.12.1 
+	media-video/mediainfo 
+	dev-db/sqlite"
+IUSE="+updater"
+MY_PN="NzbDrone"
 S=${WORKDIR}/${PN}
 
 pkg_setup() {
@@ -33,6 +30,11 @@ pkg_setup() {
 
 	enewgroup ${PN}
 	enewuser ${PN} -1 -1 /var/sonarr ${PN}
+}
+
+src_unpack() {
+	unpack ${A}
+	mv ${MY_PN} ${PN}
 }
 
 src_install() {
@@ -52,7 +54,11 @@ src_install() {
 	
 	insinto "/usr/share/"
 	doins -r "${S}"
-	fowners -R ${PN}:${PN} /usr/share/${PN}
+
+	# Allow auto-updater, make source owned by sonarr user.
+	if use updater; then
+		fowners -R ${PN}:${PN} /usr/share/${PN}
+	fi
 
 	systemd_dounit "${FILESDIR}/sonarr.service"
 	systemd_newunit "${FILESDIR}/sonarr.service" "${PN}@.service"
