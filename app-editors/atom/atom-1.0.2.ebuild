@@ -38,7 +38,6 @@ QA_PRESTRIPPED="
 "
 pkg_setup() {
 	python-any-r1_pkg_setup
-
 	npm config set python $PYTHON
 }
 
@@ -58,7 +57,7 @@ src_prepare() {
 	# Fix atom location guessing
 	sed -i -e 's/ATOM_PATH="$USR_DIRECTORY\/share\/atom/ATOM_PATH="$USR_DIRECTORY\/../g' \
 		./atom.sh \
-		|| die "Fail fixing atom-shell directory"
+		|| die "Fail fixing electron directory"
 
 	# Make bootstrap process more verbose
 	sed -i -e 's@node script/bootstrap@node script/bootstrap --no-quiet@g' \
@@ -67,6 +66,7 @@ src_prepare() {
 }
 
 src_compile() {
+	npm cache clean
 	./script/build --verbose --build-dir "${T}" || die "Failed to compile"
 
 	"${T}/Atom/resources/app/apm/bin/apm" rebuild || die "Failed to rebuild native module"
@@ -78,9 +78,6 @@ src_compile() {
 src_install() {
 
 	into	/usr
-
-	insinto /usr/share/applications
-
 	insinto /usr/share/${PN}/resources
 	exeinto /usr/bin
 
@@ -103,7 +100,5 @@ src_install() {
 	dosym ../share/${PN}/resources/app/atom.sh /usr/bin/atom
 	dosym ../share/${PN}/resources/app/apm/bin/apm /usr/bin/apm
 
-	make_desktop_entry "/usr/bin/atom %U" "Atom" "atom" \
-		"GNOME;GTK;Utility;TextEditor;Development;" \
-		"GenericName=Text Editor\nMimeType=text/plain;\nStartupNotify=true\nStartupWMClass=Atom"
+	domenu ${FILESDIR}/Atom.desktop
 }

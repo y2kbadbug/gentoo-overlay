@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Atom
+Exec=/usr/bin/atom
+StartupNotify=true
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/atom.png
