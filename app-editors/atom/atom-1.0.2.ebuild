@@ -27,9 +27,15 @@ IUSE=""
 
 DEPEND="
 	${PYTHON_DEPS}
-	dev-util/electron
 	|| ( net-libs/nodejs[npm] net-libs/iojs[npm] )
 	media-fonts/inconsolata
+	gnome-base/gconf
+	x11-libs/gtk+:2
+	gnome-base/libgnome-keyring
+	x11-libs/libnotify
+	x11-libs/libXtst
+	dev-libs/nss
+	media-libs/alsa-lib
 "
 RDEPEND="${DEPEND}"
 
@@ -45,20 +51,18 @@ src_unpack() {
 	git-r3_src_unpack
 }
 
-src_prepare() {
-	# Skip atom-shell & atom-shell-chromedriver download
-	sed -i -e "s/defaultTasks = \['download-atom-shell', 'download-atom-shell-chromedriver', /defaultTasks = [/g" \
-		./build/Gruntfile.coffee \
-		|| die "Failed to fix Gruntfile"
-
-	# Skip atom-shell copy
-	epatch "${FILESDIR}/0002-skip-atom-shell-copy.patch"
-
-	# Fix atom location guessing
+src_prepare(){
+	epatch "${FILESDIR}/${PN}-python.patch"
+	sed -i -e "/exception-reporting/d" \
+      -e "/metrics/d" package.json
+	sed -e "s/<%= description %>/$pkgdesc/" \
+    -e "s|<%= executable %>|/usr/bin/atom|"\
+    -e "s|<%= iconName %>|atom|"\
+    resources/linux/atom.desktop.in > resources/linux/Atom.desktop
+    # Fix atom location guessing
 	sed -i -e 's/ATOM_PATH="$USR_DIRECTORY\/share\/atom/ATOM_PATH="$USR_DIRECTORY\/../g' \
 		./atom.sh \
-		|| die "Fail fixing electron directory"
-
+		|| die "Fail fixing atom-shell directory"
 	# Make bootstrap process more verbose
 	sed -i -e 's@node script/bootstrap@node script/bootstrap --no-quiet@g' \
 		./script/build \
@@ -66,7 +70,6 @@ src_prepare() {
 }
 
 src_compile() {
-	npm cache clean
 	./script/build --verbose --build-dir "${T}" || die "Failed to compile"
 
 	"${T}/Atom/resources/app/apm/bin/apm" rebuild || die "Failed to rebuild native module"
@@ -76,29 +79,25 @@ src_compile() {
 }
 
 src_install() {
-
-	into	/usr
-	insinto /usr/share/${PN}/resources
-	exeinto /usr/bin
-
-	cd "${S}/resources"
-	doicon atom.png
-
-	cd "${T}/Atom/resources"
-	dodoc LICENSE.md
-
-	# Installs everything in Atom/resources/app
-	doins -r .
-
+	insinto ${EPREFIX}/usr/share/${PN}
+	doins -r ${T}/Atom/*
+	insinto ${EPREFIX}/usr/share/applications
+	newins resources/linux/Atom.desktop atom.desktop
+	insinto ${EPREFIX}/usr/share/pixmaps
+	doins resources/atom.png
+	insinto ${EPREFIX}/usr/share/licenses/${PN}
+	doins LICENSE.md
 	# Fixes permissions
-	fperms +x /usr/share/${PN}/resources/app/atom.sh
-	fperms +x /usr/share/${PN}/resources/app/apm/bin/apm
-	fperms +x /usr/share/${PN}/resources/app/apm/bin/node
-	fperms +x /usr/share/${PN}/resources/app/apm/node_modules/npm/bin/node-gyp-bin/node-gyp
-
+	fperms +x ${EPREFIX}/usr/share/${PN}/${PN}
+	fperms +x ${EPREFIX}/usr/share/${PN}/libchromiumcontent.so
+	fperms +x ${EPREFIX}/usr/share/${PN}/libffmpegsumo.so
+	fperms +x ${EPREFIX}/usr/share/${PN}/libgcrypt.so.11
+	fperms +x ${EPREFIX}/usr/share/${PN}/libnotify.so.4
+	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/atom.sh
+	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/apm/bin/apm
+	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/apm/bin/node
+	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/apm/node_modules/npm/bin/node-gyp-bin/node-gyp
 	# Symlinking to /usr/bin
-	dosym ../share/${PN}/resources/app/atom.sh /usr/bin/atom
-	dosym ../share/${PN}/resources/app/apm/bin/apm /usr/bin/apm
-
-	domenu ${FILESDIR}/Atom.desktop
+	dosym ${EPREFIX}/usr/share/${PN}/resources/app/atom.sh /usr/bin/atom
+	dosym ${EPREFIX}/usr/share/${PN}/resources/app/apm/bin/apm /usr/bin/apm
 }
