@@ -97,6 +97,7 @@ src_install() {
 	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/apm/bin/apm
 	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/apm/bin/node
 	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app/apm/node_modules/npm/bin/node-gyp-bin/node-gyp
+	fperms +x ${EPREFIX}/usr/share/${PN}/resources/app.asar.unpacked/node_modules/symbols-view/vendor/ctags-linux
 	# Symlinking to /usr/bin
 	dosym ${EPREFIX}/usr/share/${PN}/resources/app/atom.sh /usr/bin/atom
 	dosym ${EPREFIX}/usr/share/${PN}/resources/app/apm/bin/apm /usr/bin/apm
