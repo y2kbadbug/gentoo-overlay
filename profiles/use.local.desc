@@ -1,1 +1,4 @@
 net-nntp/sonarr:updater - Use built-in updater instead of using portage to handle updates
+x11-misc/mugshot:accountsservice - User image management without ~/.face
+x11-misc/mugshot:pidgin - Update buddy icon
+x11-misc/mugshot:webcam - Add webcam support
