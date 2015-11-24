@@ -13,8 +13,8 @@ SRC_URI="https://pypi.python.org/packages/source/a/autokey-py3/${PN}-${PV}.tar.g
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="qt gtk"
-REQUIRED_USE="|| ( gtk qt )"
+IUSE="qt4 gtk"
+REQUIRED_USE="|| ( gtk qt4 )"
 
 PYTHON_DEPEND='3'
 DEPEND="dev-python/python3-xlib
@@ -29,7 +29,7 @@ DEPEND="dev-python/python3-xlib
 	gtk? ( =dev-python/pygobject-3*
 		x11-libs/libnotify
 		dev-python/pygtksourceview )
-	qt? ( kde-base/pykde4
+	qt4? ( kde-base/pykde4
 	    dev-python/qscintilla-python )"
 
 RDEPEND="${DEPEND}"
