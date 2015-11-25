@@ -2,3 +2,4 @@ net-nntp/sonarr:updater - Use built-in updater instead of using portage to handl
 x11-misc/mugshot:accountsservice - User image management without ~/.face
 x11-misc/mugshot:pidgin - Update buddy icon
 x11-misc/mugshot:webcam - Add webcam support
+xfce4-base/xfce4-session:light-locker - Add light-locker support to XFCE

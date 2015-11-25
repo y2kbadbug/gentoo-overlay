@@ -39,4 +39,10 @@ S="${WORKDIR}/${PN}-${PV}"
 src_install(){
 	distutils_src_install
 	doicon config/autokey-status-dark.svg config/autokey-status-light.svg config/autokey-status.svg config/autokey.svg config/autokey.png
+	if use gtk ; then
+		rm ${D}/usr/share/applications/autokey-qt.desktop
+	fi
+	if use qt4 ; then
+		rm ${D}/usr/share/applications/autokey-gtk.desktop
+	fi
 }
