@@ -21,7 +21,3 @@ DEPEND="!!gnome-extra/polkit-gnome
 
 RDEPEND="${DEPEND}"
 
-src_install() {
-	emake DESTDIR="${D}" install
-	domenu ${FILESDIR}/xfce-polkit.desktop
-}
