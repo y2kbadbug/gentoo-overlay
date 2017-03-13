@@ -3,12 +3,13 @@
 # $Header: $
 
 EAPI="5"
+PYTHON_COMPAT=( python{3_4,3_5,3_6} )
 
-inherit distutils python
+inherit distutils-r1 python-r1
 
 DESCRIPTION="A programm for automating tasks in Linux"
 HOMEPAGE="https://github.com/guoci/autokey-py3"
-SRC_URI="https://pypi.python.org/packages/source/a/autokey-py3/${PN}-${PV}.tar.gz"
+SRC_URI="https://github.com/autokey-py3/autokey/archive/v${PV}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -16,8 +17,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="qt4 gtk"
 REQUIRED_USE="|| ( gtk qt4 )"
 
-PYTHON_DEPEND='3'
-DEPEND="dev-python/python3-xlib
+DEPEND="dev-python/python-xlib
 	dev-python/dbus-python
 	gnome-extra/zenity
 	media-gfx/imagemagick[svg]
@@ -29,7 +29,7 @@ DEPEND="dev-python/python3-xlib
 	gtk? ( =dev-python/pygobject-3*
 		x11-libs/libnotify
 		dev-python/pygtksourceview )
-	qt4? ( kde-base/pykde4
+	qt4? ( kde-apps/pykde4
 	    dev-python/qscintilla-python )"
 
 RDEPEND="${DEPEND}"
@@ -37,7 +37,7 @@ RDEPEND="${DEPEND}"
 S="${WORKDIR}/${PN}-${PV}"
 
 src_install(){
-	distutils_src_install
+	distutils-r1_src_install
 	doicon config/autokey-status-dark.svg config/autokey-status-light.svg config/autokey-status.svg config/autokey.svg config/autokey.png
 	if use gtk ; then
 		rm ${D}/usr/share/applications/autokey-qt.desktop

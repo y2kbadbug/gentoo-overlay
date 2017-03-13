@@ -6,30 +6,29 @@ EAPI=5
 
 inherit eutils user systemd
 
-SRC_URI="http://update.sonarr.tv/v2/master/mono/NzbDrone.master.tar.gz"
+SRC_URI="https://github.com/Radarr/Radarr/releases/download/v0.2.0.535/Radarr.develop.${PV}.linux.tar.gz"
 
-DESCRIPTION="Sonarr is a PVR for Usenet and BitTorrent users."
-HOMEPAGE="http://www.sonarr.tv"
+DESCRIPTION="A fork of Sonarr to work with movies à la Couchpotato.."
+HOMEPAGE="http://www.radarr.video"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 RDEPEND="
 	>=dev-lang/mono-3.12.1 
 	media-video/mediainfo 
 	dev-db/sqlite"
-IUSE="updater"
-MY_PN="NzbDrone"
-S=${WORKDIR}/${MY_PN}
+MY_PN="Radarr"
+S=${WORKDIR}/${PN}
+
+src_unpack() {
+    unpack ${A}
+    mv ${MY_PN} ${PN}
+}
 
 pkg_setup() {
 	enewgroup ${PN}
-	enewuser ${PN} -1 -1 /var/lib/sonarr ${PN}
-}
-
-src_unpack() {
-	unpack ${A}
-	mv ${MY_PN} ${PN}
+	enewuser ${PN} -1 -1 /var/lib/radarr ${PN}
 }
 
 src_install() {
@@ -45,16 +44,10 @@ src_install() {
 	insinto /etc/logrotate.d
 	insopts -m0644 -o root -g root
 	newins "${FILESDIR}/${PN}.logrotate" ${PN}
-
 	
 	insinto "/usr/share/"
 	doins -r "${S}"
 
-	# Allow auto-updater, make source owned by sonarr user.
-	if use updater; then
-		fowners -R ${PN}:${PN} /usr/share/${PN}
-	fi
-
-	systemd_dounit "${FILESDIR}/sonarr.service"
-	systemd_newunit "${FILESDIR}/sonarr.service" "${PN}@.service"
+	systemd_dounit "${FILESDIR}/radarr.service"
+	systemd_newunit "${FILESDIR}/radarr.service" "${PN}@.service"
 }
