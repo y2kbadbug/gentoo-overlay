@@ -26,11 +26,10 @@ pkg_setup() {
 	enewgroup ${PN}
 	enewuser ${PN} -1 -1 /var/lib/sonarr ${PN}
 }
-
-src_unpack() {
-	unpack ${A}
-	mv ${MY_PN} ${PN}
-}
+## src_unpack() {
+##	unpack ${A}
+##	mv ${MY_PN} ${PN}
+## }
 
 src_install() {
 	newconfd "${FILESDIR}/${PN}.conf" ${PN}
